@@ -1,69 +1,348 @@
-import Image from "next/image";
+"use client";
+
+import { useEffect, useState } from "react";
+import { supabase } from "@/lib/supabase";
+import Sidebar from "@/components/sidebar/Sidebar";
+import Banner from "@/components/Banner";
+import MembersTable from "@/components/member-rewards/MembersTable";
+import MemberDetailsPanel from"@/components/member-editor/MemberDetailsPanel";
+import DashboardToolbar from "@/components/dashboard/DashboardToolbar";
+import RulesPanel from "@/components/RulesPanel";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
-  return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.js
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+  const [members, setMembers] = useState([]);
+  const [selectedMember, setSelectedMember] = useState(null);
+  const [weeklyRewards, setWeeklyRewards] = useState([]);
+  const [selectedPeriod, setSelectedPeriod] = useState(null);
+  const [periods, setPeriods] = useState([]); 
+  const [allRewards, setAllRewards] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const router = useRouter();
+
+  const filteredMembers = members.filter(member => member.name.toLowerCase().startsWith(searchTerm.toLowerCase()));
+
+
+  useEffect(() => {
+    getMembers();
+    getPeriods();
+    getAllRewards();
+  }, []);
+
+  useEffect(() => {
+
+  if (selectedPeriod) {
+    getWeeklyRewards(selectedPeriod.id);
+  }
+
+}, [selectedPeriod]);
+
+  async function getMembers() {
+  const { data, error } = await supabase
+    .from("members")
+    .select("*")
+    .order("id", {ascending: true});
+
+    if (data) {
+      setMembers(data);
+    }
+  }
+
+  async function getWeeklyRewards(periodId) {
+    const { data } = await supabase
+      .from("weekly_rewards")
+      .select("*")
+      .eq("reward_period_id", periodId);
+
+    if (data) {
+      setWeeklyRewards(data);
+    }
+  }
+
+    async function getPeriods() {
+
+      const { data } = await supabase
+        .from("reward_periods")
+        .select("*")
+        .order("week_start", {
+          ascending: false
+        });
+
+      if (data) {
+
+        setPeriods(data);
+
+        // refresh current selected period
+        if (selectedPeriod) {
+
+          const refreshed =
+            data.find(
+              period =>
+                period.id ===
+                selectedPeriod.id
+            );
+
+          if (refreshed) {
+
+            setSelectedPeriod(
+              refreshed
+            );
+
+            return;
+          }
+        }
+
+        // first load
+        const today = new Date();
+
+        const current =
+          data.find(period => {
+
+            const start =
+              new Date(
+                period.week_start
+              );
+
+            const end =
+              new Date(
+                period.week_end
+              );
+              end.setHours(23, 59, 59, 999);
+
+            return (
+              today >= start &&
+              today <= end
+            );
+          });
+
+        setSelectedPeriod(current);
+      }
+    }
+
+  async function getAllRewards() {
+
+    const { data } = await supabase
+      .from("weekly_rewards")
+      .select("*");
+
+    if (data) {
+      setAllRewards(data);
+    }
+  }
+
+      async function handleFinalizeWeek() {
+
+      if (!selectedPeriod) return;
+      if (!weeklyRewards.length) {
+    return;
+  }
+
+      // prevent double finalize
+      if (selectedPeriod.is_finalized) {
+        return;
+      }
+
+      const confirmed =
+        window.confirm(
+          "Finalize this rewards period?\n\nThis will distribute all rewards and lock editing."
+        );
+
+      if (!confirmed) {
+        return;
+      }
+
+      // add rewards to balances
+      for (const reward of weeklyRewards) {
+
+        const member =
+          members.find(
+            member =>
+              member.id === reward.member_id
+          );
+
+        if (!member) continue;
+
+        const currentBalance =
+          member.balance || 0;
+
+        const rewardAmount =
+          reward.total_week || 0;
+
+        await supabase
+          .from("members")
+          .update({
+            balance:
+              currentBalance +
+              rewardAmount
+          })
+          .eq(
+            "id",
+            member.id
+          );
+      }
+
+      // finalize period
+      await supabase
+        .from("reward_periods")
+        .update({
+          is_finalized: true
+        })
+        .eq(
+          "id",
+          selectedPeriod.id
+        );
+
+      // refresh data
+      await getMembers();
+      await getPeriods();
+      await getAllRewards();
+
+      router.refresh();
+    }
+
+        async function handleReopenWeek() {
+
+      if (!selectedPeriod) return;
+
+      // only reopen finalized periods
+      if (!selectedPeriod.is_finalized) {
+        return;
+      }
+
+      const confirmed =
+        window.confirm(
+          "Reopen this rewards period?\n\nThis will remove distributed rewards from balances and unlock editing."
+        );
+
+      if (!confirmed) {
+        return;
+      }
+
+      // remove rewards from balances
+      for (const reward of weeklyRewards) {
+
+        const member =
+          members.find(
+            member =>
+              member.id === reward.member_id
+          );
+
+        if (!member) continue;
+
+        const currentBalance =
+          member.balance || 0;
+
+        const rewardAmount =
+          reward.total_week || 0;
+
+        await supabase
+          .from("members")
+          .update({
+            balance:
+              Math.max(
+                currentBalance -
+                rewardAmount,
+                0
+              )
+          })
+          .eq(
+            "id",
+            member.id
+          );
+      }
+
+      // unlock period
+      await supabase
+        .from("reward_periods")
+        .update({
+          is_finalized: false
+        })
+        .eq(
+          "id",
+          selectedPeriod.id
+        );
+
+      // refresh
+      await getMembers();
+      await getPeriods();
+      await getAllRewards();
+
+      router.refresh();
+    }
+
+return (
+  <div className="min-h-screen flex bg-[#f6f5ef]">
+
+    {/* Sidebar */}
+    <Sidebar/>
+
+    {/* Main Area */}
+    <main className="flex-1">
+
+    <Banner/>
+
+
+  <div className="p-6">
+    <DashboardToolbar  
+      selectedPeriod={selectedPeriod} 
+      periods={periods} 
+      setPeriods={setPeriods} 
+      setSelectedPeriod={setSelectedPeriod}
+      searchTerm={searchTerm}
+      setSearchTerm={setSearchTerm}
+      showFinalizeButton={true}
+      onFinalizeWeek={handleFinalizeWeek}
+      onReopenWeek={handleReopenWeek}
+      />
+
+
+
+    <div className="flex gap-6 mt-4">
+
+     
+
+
+    {/* Workspace */}
+    <div className="flex-1">
+
+      <div className={`grid gap-6 ${selectedMember ? "grid-cols-[1fr_450px]" : "grid-cols-1"}`}>
+
+        {/* Members Table */}
+          <MembersTable
+            members={filteredMembers}
+            weeklyRewards={weeklyRewards}
+            allRewards={allRewards}
+            selectedMember={selectedMember}
+            setSelectedMember={setSelectedMember}
+          />
+
+        {/* Member Editor */}
+
+        {selectedMember && (
+          <div className="animate-[fadeIn_.3s_ease-in-out]">
+            <MemberDetailsPanel
+              selectedMember={selectedMember}
+              selectedPeriod={selectedPeriod}
+              weeklyRewards={weeklyRewards}
+              getMembers={getMembers}
+              setSelectedMember={setSelectedMember}
+              allRewards={allRewards}            />
+          </div>
+        )}
+      </div>
+
     </div>
-  );
+
+    {/* Right Rules Panel */}
+    <aside className="hidden lg:block w-80">
+      <RulesPanel />
+    </aside>
+
+  </div>
+  </div>
+
+  </main>
+
+  </div>
+);
 }
