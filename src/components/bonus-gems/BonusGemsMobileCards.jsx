@@ -20,7 +20,12 @@ export default function BonusGemsMobileCards({
 }) {
 
   return (
-    <div className="space-y-4">
+    <div className=" 
+    grid
+    grid-cols-1
+    gap-4
+    w-full
+    min-w-0    ">
 
       {paginatedMembers.map(member => {
 
@@ -93,6 +98,10 @@ export default function BonusGemsMobileCards({
           <div
             key={member.id}
             className="
+              w-full
+              max-w-full
+              min-w-0
+              overflow-hidden
               bg-white
               border
               border-[#E8E2D6]
@@ -138,6 +147,8 @@ export default function BonusGemsMobileCards({
                       rounded-full
                       font-medium
                       ${statusStyles}
+                      flex-wrap
+                      items-center
                     `}
                   >
 
@@ -187,11 +198,12 @@ export default function BonusGemsMobileCards({
 
               <div
                 className="
-                  flex
-                  items-center
-                  justify-center
-                  gap-3
-                "
+                      grid
+                      grid-cols-[40px_1fr_40px]
+                      sm:grid-cols-[48px_96px_48px]
+                      items-center
+                      gap-2
+                      w-full                "
               >
 
                 {/* Minus */}
@@ -224,8 +236,10 @@ export default function BonusGemsMobileCards({
                     }));
                   }}
                   className="
-                    w-12
-                    h-12
+                    w-10
+                    h-10
+                    sm:w-12
+                    sm:h-12
                     rounded-full
                     border
                     flex
@@ -272,8 +286,10 @@ export default function BonusGemsMobileCards({
                     }));
                   }}
                   className="
-                    w-24
-                    h-12
+                    w-full
+                    h-10
+                    sm:h-12
+                    min-w-0
                     rounded-xl
                     border
                     border-[#DDECCF]
@@ -319,8 +335,10 @@ export default function BonusGemsMobileCards({
                     }));
                   }}
                   className="
-                    w-12
-                    h-12
+                    w-10
+                    h-10
+                    sm:w-12
+                    sm:h-12
                     rounded-full
                     border
                     flex

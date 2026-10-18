@@ -332,7 +332,7 @@ export default function GuildWealthTable({
       </div>
 
       {/* Desktop */}
-      <div className="hidden md:block">
+      <div className="hidden xl:block">
 
         <GuildWealthDesktopTable
           paginatedMembers={paginatedMembers}
@@ -347,7 +347,7 @@ export default function GuildWealthTable({
       </div>
 
       {/* Mobile */}
-      <div className="md:hidden">
+      <div className="xl:hidden">
 
         <GuildWealthMobileCards
           paginatedMembers={paginatedMembers}

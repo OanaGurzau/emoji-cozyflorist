@@ -9,14 +9,14 @@ export default function DashboardToolbar({selectedPeriod, periods, setPeriods, s
   return (
     <div className="flex
     flex-col
-    lg:grid
-    lg:grid-cols-[2fr_200px_320px]
+    xl:grid
+    xl:grid-cols-[2fr_200px_320px]
     gap-4
-    lg:gap-6
+    xl:gap-6
     mt-4
     w-full
     items-stretch
-    lg:items-center">
+    xl:items-center">
 
       {/*left*/}
       <div className="grid

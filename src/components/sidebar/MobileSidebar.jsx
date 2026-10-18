@@ -49,7 +49,7 @@ export default function MobileSidebar() {
       {/* TOP BAR */}
       <div
         className="
-          md:hidden
+          lg:hidden
           fixed
           top-0
           left-0
@@ -92,7 +92,7 @@ export default function MobileSidebar() {
       {open && (
         <div
           className="
-            md:hidden
+            lg:hidden
             fixed
             inset-0
             bg-black/40
@@ -105,7 +105,7 @@ export default function MobileSidebar() {
       {/* DRAWER */}
       <aside
         className={`
-          md:hidden
+          lg:hidden
           fixed
           top-0
           left-0

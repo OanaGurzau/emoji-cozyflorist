@@ -159,16 +159,17 @@ export default function BonusGemsPage() {
         min-h-screen
         flex
         bg-[#f6f5ef]
+        overflow-x-hidden
       "
     >
 
       <Sidebar />
 
-      <main className="flex-1">
+      <main className="flex-1 overflow-x-hidden">
 
         <Banner />
 
-        <div className="p-6">
+        <div className="p-4 sm:p-6 min-w-0">
 
           <DashboardToolbar
             selectedPeriod={selectedPeriod}
@@ -191,7 +192,7 @@ export default function BonusGemsPage() {
             "
           >
 
-            <div className="flex-1">
+            <div className="flex-1 min-w-0">
 
               <BonusGemsTable
                 members={

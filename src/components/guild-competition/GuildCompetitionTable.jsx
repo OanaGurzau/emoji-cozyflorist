@@ -110,7 +110,7 @@ export default function GuildCompetitionTable({
     <>
 
       {/* Desktop */}
-      <div className="hidden md:block">
+      <div className="hidden lx:block">
 
         <GuildCompetitionDesktopTable
           paginatedMembers={paginatedMembers}
@@ -124,7 +124,7 @@ export default function GuildCompetitionTable({
       </div>
 
       {/* Mobile */}
-      <div className="md:hidden">
+      <div className="lx:hidden">
 
         <GuildCompetitionMobileCards
           paginatedMembers={paginatedMembers}

@@ -42,7 +42,7 @@ export default function DesktopSidebar() {
     <aside
       className="
         hidden
-        md:flex
+        lg:flex
         w-65
         bg-[#f9f3e9]
         border-[#E8E2D6]

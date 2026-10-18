@@ -295,20 +295,21 @@ export default function BonusGemsTable({
   return (
     <>
       {/* Day Selector */}
-      <div
-        className="
-          flex
-          items-center
-          justify-center
-          gap-2
-          flex-wrap
-          mb-4
-        "
-      >
+      <div className="w-full overflow-x-auto pb-2 mb-4 scrollbar-hide">
 
+        <div
+          className="
+            flex
+            items-center
+            gap-2
+            min-w-max
+            px-1
+          "
+        >
         {dayKeys.map((day, index) => (
 
           <button
+          
             key={day}
             onClick={() => {
 
@@ -322,13 +323,15 @@ export default function BonusGemsTable({
               selectedPeriod?.is_finalized
             }
             className={`
-              px-4
+              shrink-0
+              px-3
               py-2
               rounded-xl
               border
-              text-sm
+              text-xs sm:text-sm
               font-medium
               transition
+              sm:px-4
 
               ${
                 selectedPeriod?.is_finalized
@@ -370,7 +373,7 @@ export default function BonusGemsTable({
 
               <span
                 className={`
-                  text-[11px]
+                  text-[10px] sm:text-[11px]
 
                   ${
                     selectedDay === day
@@ -387,11 +390,12 @@ export default function BonusGemsTable({
           </button>
 
         ))}
+        </div>
 
       </div>
 
       {/* Desktop */}
-      <div className="hidden md:block">
+      <div className="hidden xl:block">
 
         <BonusGemsDesktopTable
           paginatedMembers={paginatedMembers}
@@ -404,7 +408,7 @@ export default function BonusGemsTable({
       </div>
 
       {/* Mobile */}
-      <div className="md:hidden">
+      <div className="xl:hidden">
 
         <BonusGemsMobileCards
           paginatedMembers={paginatedMembers}
@@ -475,10 +479,10 @@ export default function BonusGemsTable({
           className="
             flex
             items-center
-            justify-center
-            gap-2
+=            gap-2
             mt-6
             min-w-max
+            px-1
           "
         >
 
