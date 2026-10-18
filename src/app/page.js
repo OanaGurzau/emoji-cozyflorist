@@ -305,36 +305,84 @@ return (
     {/* Workspace */}
     <div className="flex-1">
 
-      <div className={`grid gap-6 ${selectedMember ? "grid-cols-[1fr_450px]" : "grid-cols-1"}`}>
+{/* MOBILE/TABLET */}
+<div className="xl:hidden">
 
-        {/* Members Table */}
-          <MembersTable
-            members={filteredMembers}
-            weeklyRewards={weeklyRewards}
-            allRewards={allRewards}
-            selectedMember={selectedMember}
-            setSelectedMember={setSelectedMember}
-          />
+  {selectedMember ? (
 
-        {/* Member Editor */}
+    <MemberDetailsPanel
+      selectedMember={selectedMember}
+      selectedPeriod={selectedPeriod}
+      weeklyRewards={weeklyRewards}
+      getMembers={getMembers}
+      setSelectedMember={setSelectedMember}
+      allRewards={allRewards}
+    />
 
-        {selectedMember && (
-          <div className="animate-[fadeIn_.3s_ease-in-out]">
-            <MemberDetailsPanel
-              selectedMember={selectedMember}
-              selectedPeriod={selectedPeriod}
-              weeklyRewards={weeklyRewards}
-              getMembers={getMembers}
-              setSelectedMember={setSelectedMember}
-              allRewards={allRewards}            />
-          </div>
-        )}
+  ) : (
+
+    <MembersTable
+      members={filteredMembers}
+      weeklyRewards={weeklyRewards}
+      allRewards={allRewards}
+      selectedMember={selectedMember}
+      setSelectedMember={setSelectedMember}
+    />
+
+  )}
+
+</div>
+
+{/* DESKTOP */}
+<div className="hidden xl:block">
+
+  <div
+    className={`
+      grid
+      gap-6
+
+      ${
+        selectedMember
+          ? "grid-cols-[1fr_450px]"
+          : "grid-cols-1"
+      }
+    `}
+  >
+
+    {/* Members Table */}
+    <MembersTable
+      members={filteredMembers}
+      weeklyRewards={weeklyRewards}
+      allRewards={allRewards}
+      selectedMember={selectedMember}
+      setSelectedMember={setSelectedMember}
+    />
+
+    {/* Member Editor */}
+    {selectedMember && (
+
+      <div className="animate-[fadeIn_.3s_ease-in-out]">
+
+        <MemberDetailsPanel
+          selectedMember={selectedMember}
+          selectedPeriod={selectedPeriod}
+          weeklyRewards={weeklyRewards}
+          getMembers={getMembers}
+          setSelectedMember={setSelectedMember}
+          allRewards={allRewards}
+        />
+
       </div>
 
+    )}
+
+  </div>
+
+</div>
     </div>
 
     {/* Right Rules Panel */}
-    <aside className="hidden lg:block w-80">
+    <aside className="hidden xl:block w-80">
       <RulesPanel />
     </aside>
 
