@@ -282,6 +282,8 @@ export default function BonusGemsDesktopTable({
                     outline-none
                     text-sm
                     font-medium
+                    text-[#3B2B2B]
+                    appearance-none
 
                     disabled:bg-[#F3F1EC]
                     disabled:text-[#B7AEA4]
