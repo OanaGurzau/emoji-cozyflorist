@@ -297,6 +297,8 @@ export default function BonusGemsMobileCards({
                     outline-none
                     text-base
                     font-semibold
+                    text-[#3B2B2B]
+                    appearance-none
 
                     disabled:bg-[#F3F1EC]
                     disabled:text-[#B7AEA4]
