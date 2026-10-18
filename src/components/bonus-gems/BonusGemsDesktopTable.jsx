@@ -75,7 +75,7 @@ export default function BonusGemsDesktopTable({
             draftBonus[member.id] || {};
 
           const currentDayBonus =
-            memberBonus[selectedDay] || 0;
+            memberBonus[selectedDay] ?? "";
 
           const weeklyTotal =
             Object.values(memberBonus)
@@ -260,7 +260,9 @@ export default function BonusGemsDesktopTable({
                   onChange={(e) => {
 
                     const value =
-                      Number(e.target.value);
+                      e.target.value === ""
+                        ? ""
+                        : Number(e.target.value);
 
                     setDraftBonus(prev => ({
                       ...prev,

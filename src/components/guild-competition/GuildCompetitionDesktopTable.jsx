@@ -87,10 +87,10 @@ export default function GuildCompetitionDesktopTable({
             item => item.member_id === member.id
             );
 
-          const score =
-            draftScores[member.id] ??
-            existingScore?.score ??
-            0;
+            const score =
+              draftScores[member.id] ??
+              existingScore?.score ??
+              "";
 
             const isEligible =
               member.status === "Eligible";
@@ -185,14 +185,18 @@ export default function GuildCompetitionDesktopTable({
                 <input
                   type="number"
                   value={score}
-                  onChange={(e) =>
+                  onChange={(e) => {
+
+                    const value =
+                      e.target.value === ""
+                        ? ""
+                        : Number(e.target.value);
+
                     setDraftScores(prev => ({
                       ...prev,
-                      [member.id]:
-                        Number(e.target.value)
-                    }))
-                  }
-                  className="
+                      [member.id]: value
+                    }));
+                  }}                  className="
                     border
                     border-[#DDECCF]
                     rounded-xl

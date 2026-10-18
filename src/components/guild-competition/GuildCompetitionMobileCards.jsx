@@ -33,8 +33,7 @@ export default function GuildCompetitionMobileCards({
         const score =
           draftScores[member.id] ??
           existingScore?.score ??
-          0;
-
+          "";
         const isEligible =
           member.status === "Eligible";
 
@@ -188,13 +187,18 @@ export default function GuildCompetitionMobileCards({
                 <input
                   type="number"
                   value={score}
-                  onChange={(e) =>
+                  onChange={(e) => {
+
+                    const value =
+                      e.target.value === ""
+                        ? ""
+                        : Number(e.target.value);
+
                     setDraftScores(prev => ({
                       ...prev,
-                      [member.id]:
-                        Number(e.target.value)
-                    }))
-                  }
+                      [member.id]: value
+                    }));
+                  }}
                   className="
                     w-full
                     border
@@ -203,6 +207,8 @@ export default function GuildCompetitionMobileCards({
                     px-3
                     py-2
                     outline-none
+                    text-[#3B2B2B]
+                    appearance-none
 
                     disabled:bg-[#F3F1EC]
                     disabled:text-[#B7AEA4]

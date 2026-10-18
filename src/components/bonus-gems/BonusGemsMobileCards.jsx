@@ -251,6 +251,9 @@ export default function BonusGemsMobileCards({
                     border-[#DDECCF]
                     active:scale-95
                     transition
+                    text-[#3B2B2B]
+                    appearance-none
+
 
                     disabled:bg-[#F3F1EC]
                     disabled:text-[#B7AEA4]
@@ -352,6 +355,9 @@ export default function BonusGemsMobileCards({
                     border-[#DDECCF]
                     active:scale-95
                     transition
+                    text-[#3B2B2B]
+                    appearance-none
+
 
                     disabled:bg-[#F3F1EC]
                     disabled:text-[#B7AEA4]

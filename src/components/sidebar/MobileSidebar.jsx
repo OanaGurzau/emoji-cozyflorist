@@ -83,7 +83,7 @@ export default function MobileSidebar() {
             transition
           "
         >
-          <Menu size={28} />
+          <Menu size={28} className="text-[#171717]" />
         </button>
 
       </div>
@@ -158,7 +158,7 @@ export default function MobileSidebar() {
               transition
             "
           >
-            <X size={24} />
+            <X size={24} className="text-[#171717]" />
           </button>
 
         </div>
