@@ -19,6 +19,8 @@ export default function Home() {
   const [allRewards, setAllRewards] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const router = useRouter();
+  const [eligibleMembers, setEligibleMembers] =
+  useState([]);
 
   const filteredMembers = members.filter(member => member.name.toLowerCase().startsWith(searchTerm.toLowerCase()));
 
@@ -34,8 +36,20 @@ export default function Home() {
   if (selectedPeriod) {
     getWeeklyRewards(selectedPeriod.id);
   }
-
 }, [selectedPeriod]);
+
+  useEffect(() => {
+
+  if (!members.length) return;
+
+  const eligible =
+    getEligibleMembers();
+
+  setEligibleMembers(eligible);
+
+}, [members]);
+
+
 
   async function getMembers() {
   const { data, error } = await supabase
@@ -129,6 +143,53 @@ export default function Home() {
       setAllRewards(data);
     }
   }
+
+  function getEligibleMembers() {
+
+  const today = new Date();
+
+  return members.filter(member => {
+
+    if (
+      member.status !==
+      "Waiting Period"
+    ) {
+      return false;
+    }
+
+    const joinDate =
+      new Date(member.join_date);
+
+    // waiting period
+    const waitEndDate =
+      new Date(joinDate);
+
+    waitEndDate.setDate(
+      waitEndDate.getDate() + 7
+    );
+
+    // next monday
+    const eligibleDate =
+      new Date(waitEndDate);
+
+    const day =
+      eligibleDate.getDay();
+
+    const daysUntilMonday =
+      day === 1
+        ? 7
+        : day === 0
+          ? 1
+          : 8 - day;
+
+    eligibleDate.setDate(
+      eligibleDate.getDate() +
+      daysUntilMonday
+    );
+
+    return today >= eligibleDate;
+  });
+}
 
       async function handleFinalizeWeek() {
 
@@ -295,9 +356,84 @@ return (
       onReopenWeek={handleReopenWeek}
       />
 
+          {eligibleMembers.length > 0 && (
+
+  <div
+    className="
+      mt-4
+      rounded-2xl
+      border
+      border-[#DDECCF]
+      bg-[#ff85c2]
+      px-5
+      py-4
+      flex
+      items-center
+      justify-between
+    "
+  >
+
+    <div>
+
+      <p
+        className="
+          font-semibold
+          text-[#21443B]
+        "
+      >
+        ✨ {eligibleMembers.length}
+        {" "}
+        new member
+        {eligibleMembers.length > 1
+          ? "s are"
+          : " is"}
+        {" "}
+        now eligible for a status change!
+      </p>
+
+      <p
+        className="
+          text-sm
+          text-[#5B6B65]
+          mt-1
+        "
+      >
+        Review their status and
+        update if needed.
+      </p>
+
+    </div>
+
+    <button
+      onClick={() =>
+        setSelectedMember(
+          eligibleMembers[0]
+        )
+      }
+      className="
+        bg-[#4FA36B]
+        hover:bg-[#438B5B]
+        text-white
+        px-4
+        py-2
+        rounded-xl
+        font-medium
+        transition
+        cursor-pointer
+      "
+    >
+      Review
+    </button>
+
+  </div>
+
+)}
+
+
 
 
     <div className="flex gap-6 mt-4">
+
 
      
 
@@ -317,6 +453,7 @@ return (
       getMembers={getMembers}
       setSelectedMember={setSelectedMember}
       allRewards={allRewards}
+      getAllRewards={getAllRewards}
     />
 
   ) : (
@@ -334,22 +471,27 @@ return (
 </div>
 
 {/* DESKTOP */}
+{/* DESKTOP */}
 <div className="hidden xl:block">
 
-  <div
-    className={`
-      grid
-      gap-6
+  {selectedMember ? (
 
-      ${
-        selectedMember
-          ? "grid-cols-[1fr_450px]"
-          : "grid-cols-1"
-      }
-    `}
-  >
+    <div className="animate-[fadeIn_.3s_ease-in-out]">
 
-    {/* Members Table */}
+      <MemberDetailsPanel
+        selectedMember={selectedMember}
+        selectedPeriod={selectedPeriod}
+        weeklyRewards={weeklyRewards}
+        getMembers={getMembers}
+        setSelectedMember={setSelectedMember}
+        allRewards={allRewards}
+        getAllRewards={getAllRewards}
+      />
+
+    </div>
+
+  ) : (
+
     <MembersTable
       members={filteredMembers}
       weeklyRewards={weeklyRewards}
@@ -358,28 +500,10 @@ return (
       setSelectedMember={setSelectedMember}
     />
 
-    {/* Member Editor */}
-    {selectedMember && (
-
-      <div className="animate-[fadeIn_.3s_ease-in-out]">
-
-        <MemberDetailsPanel
-          selectedMember={selectedMember}
-          selectedPeriod={selectedPeriod}
-          weeklyRewards={weeklyRewards}
-          getMembers={getMembers}
-          setSelectedMember={setSelectedMember}
-          allRewards={allRewards}
-        />
-
-      </div>
-
-    )}
-
-  </div>
+  )}
 
 </div>
-    </div>
+</div>
 
     {/* Right Rules Panel */}
     <aside className="hidden xl:block w-80">

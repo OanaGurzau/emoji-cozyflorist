@@ -19,7 +19,8 @@ export default function MemberDetailsPanel({
   weeklyRewards,
   getMembers,
   setSelectedMember,
-  allRewards
+  allRewards,
+  getAllRewards
 }) {
 
   const [status, setStatus] =
@@ -158,6 +159,31 @@ export default function MemberDetailsPanel({
     }, 3000);
   }
 
+  async function handleRemoveMember() {
+
+  const confirmed =
+    window.confirm(
+      "Remove this member?\n\nAll rewards history will be permanently deleted."
+    );
+
+  if (!confirmed) {
+    return;
+  }
+
+  await supabase
+    .from("members")
+    .delete()
+    .eq(
+      "id",
+      selectedMember.id
+    );
+
+  await getMembers();
+  await getAllRewards();
+
+  setSelectedMember(null);
+}
+
   return (
 
     <section
@@ -278,6 +304,24 @@ export default function MemberDetailsPanel({
         "
       >
         Save Status
+      </button>
+
+      <button
+        onClick={handleRemoveMember}
+        className="
+          w-full
+          mt-3
+          bg-[#C05673]
+          hover:bg-[#A9445F]
+          text-white
+          py-3
+          rounded-2xl
+          font-semibold
+          transition
+          cursor-pointer
+        "
+      >
+        Remove Member
       </button>
 
     </section>
