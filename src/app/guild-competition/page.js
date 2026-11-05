@@ -7,6 +7,7 @@ import Banner from "@/components/Banner";
 import DashboardToolbar from "@/components/dashboard/DashboardToolbar";
 import GuildCompetitionTable from "@/components/guild-competition/GuildCompetitionTable";
 import CompetitionRulesCard from "@/components/guild-competition/CompetitionRulesCard";
+import useAdminAuth from "@/lib/useAdminAuth";
 
 export default function GuildCompetitionPage() {
       const [members, setMembers] = useState([]);
@@ -15,6 +16,10 @@ export default function GuildCompetitionPage() {
       const [searchTerm, setSearchTerm] = useState("");
       const [competitionScores, setCompetitionScores] = useState([]);
       const filteredMembers = members.filter(member => member.name.toLowerCase().startsWith(searchTerm.toLowerCase()));
+      const {
+  loadingAuth,
+  isAdmin
+} = useAdminAuth();
 
       useEffect(() => {
 
@@ -113,6 +118,14 @@ export default function GuildCompetitionPage() {
             setCompetitionScores(data);
         }
     }
+
+    if (loadingAuth) {
+  return null;
+}
+
+if (!isAdmin) {
+  return null;
+}
     
     return(
           <div className="min-h-screen flex bg-[#f6f5ef]">

@@ -9,6 +9,7 @@ import MemberDetailsPanel from"@/components/member-editor/MemberDetailsPanel";
 import DashboardToolbar from "@/components/dashboard/DashboardToolbar";
 import RulesPanel from "@/components/RulesPanel";
 import { useRouter } from "next/navigation";
+import useAdminAuth from "@/lib/useAdminAuth";
 
 export default function Home() {
   const [members, setMembers] = useState([]);
@@ -23,6 +24,10 @@ export default function Home() {
   useState([]);
 
   const filteredMembers = members.filter(member => member.name.toLowerCase().startsWith(searchTerm.toLowerCase()));
+  const {
+  loadingAuth,
+  isAdmin
+} = useAdminAuth();
 
 
   useEffect(() => {
@@ -330,6 +335,14 @@ export default function Home() {
 
       router.refresh();
     }
+
+    if (loadingAuth) {
+  return null;
+}
+
+if (!isAdmin) {
+  return null;
+}
 
 return (
   <div className="min-h-screen flex bg-[#f6f5ef]">

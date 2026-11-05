@@ -3,38 +3,51 @@
 import { usePathname } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
+import useAdminStatus from "@/lib/useAdminStatus";
 
 import {
   Trophy,
   Gem,
   Coins,
-  Gift
+  Gift,
+  Bell,
 } from "lucide-react";
 
 export default function DesktopSidebar() {
 
   const pathname = usePathname();
+  const isAdmin = useAdminStatus();
 
   const links = [
     {
+      href: "/quest-board",
+      label: "Quest Board",
+      icon: Bell
+    },
+
+    {
       href: "/guild-competition",
       label: "Guild Competition",
-      icon: Trophy
+      icon: Trophy,
+      adminOnly: true
     },
     {
       href: "/guild-wealth",
       label: "Guild Wealth",
-      icon: Coins
+      icon: Coins,
+      adminOnly: true
     },
     {
       href: "/bonus-gems",
       label: "Bonus Gems",
-      icon: Gift
+      icon: Gift,
+      adminOnly: true
     },
     {
       href: "/",
       label: "Member Rewards",
-      icon: Gem
+      icon: Gem,
+      adminOnly: true
     }
   ];
 
@@ -67,6 +80,13 @@ export default function DesktopSidebar() {
       <div className="px-3 space-y-2 mt-10 w-full">
 
         {links.map(link => {
+
+          if (
+            link.adminOnly &&
+            !isAdmin
+          ) {
+            return null;
+          }
 
           const Icon = link.icon;
 

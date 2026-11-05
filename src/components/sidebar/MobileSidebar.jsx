@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { usePathname } from "next/navigation";
-
+import useAdminStatus from "@/lib/useAdminStatus";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -12,7 +12,8 @@ import {
   Coins,
   Gift,
   Menu,
-  X
+  X,
+  Bell
 } from "lucide-react";
 
 export default function MobileSidebar() {
@@ -20,27 +21,40 @@ export default function MobileSidebar() {
   const pathname = usePathname();
 
   const [open, setOpen] = useState(false);
-
+const isAdmin = useAdminStatus();
   const links = [
+    {
+      href: "/quest-board",
+      label: "Quest Board",
+      icon: Bell
+    },
     {
       href: "/guild-competition",
       label: "Guild Competition",
-      icon: Trophy
+      icon: Trophy,
+      adminOnly: true
+
     },
     {
       href: "/guild-wealth",
       label: "Guild Wealth",
-      icon: Coins
+      icon: Coins,
+      adminOnly: true
+
     },
     {
       href: "/bonus-gems",
       label: "Bonus Gems",
-      icon: Gift
+      icon: Gift,
+      adminOnly: true
+
     },
     {
       href: "/",
       label: "Member Rewards",
-      icon: Gem
+      icon: Gem,
+      adminOnly: true
+
     }
   ];
 
@@ -167,6 +181,14 @@ export default function MobileSidebar() {
         <div className="px-3 space-y-2 mt-6">
 
           {links.map(link => {
+
+            if (
+            link.adminOnly &&
+            !isAdmin
+          ) {
+            return null;
+          }
+
 
             const Icon = link.icon;
 

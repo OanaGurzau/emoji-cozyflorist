@@ -7,6 +7,7 @@ import Banner from "@/components/Banner";
 import DashboardToolbar from "@/components/dashboard/DashboardToolbar";
 import GuildWealthTable from "@/components/guild-wealth/GuildWealthTable";
 import WealthRulesCard from "@/components/guild-wealth/WealthRulesCard";
+import useAdminAuth from "@/lib/useAdminAuth";
 
 export default function GuildWealthPage() {
 
@@ -29,6 +30,11 @@ export default function GuildWealthPage() {
         .toLowerCase()
         .startsWith(searchTerm.toLowerCase())
   );
+
+  const {
+  loadingAuth,
+  isAdmin
+} = useAdminAuth();
 
   useEffect(() => {
 
@@ -127,6 +133,14 @@ export default function GuildWealthPage() {
       setWealthEntries(data);
     }
   }
+
+  if (loadingAuth) {
+  return null;
+}
+
+if (!isAdmin) {
+  return null;
+}
 
   return (
     <div className="min-h-screen flex bg-[#f6f5ef]">

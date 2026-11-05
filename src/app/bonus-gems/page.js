@@ -13,6 +13,9 @@ import DashboardToolbar from
 import BonusGemsTable from
 "@/components/bonus-gems/BonusGemsTable";
 
+import useAdminAuth from
+"@/lib/useAdminAuth";
+
 export default function BonusGemsPage() {
 
   const [members, setMembers] =
@@ -38,6 +41,11 @@ export default function BonusGemsPage() {
           searchTerm.toLowerCase()
         )
     );
+
+    const {
+  loadingAuth,
+  isAdmin
+} = useAdminAuth();
 
   useEffect(() => {
 
@@ -152,6 +160,14 @@ export default function BonusGemsPage() {
 
     }
   }
+
+  if (loadingAuth) {
+  return null;
+}
+
+if (!isAdmin) {
+  return null;
+}
 
   return (
     <div

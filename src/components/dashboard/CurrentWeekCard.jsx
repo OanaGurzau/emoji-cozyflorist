@@ -1,6 +1,7 @@
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import {CalendarDays} from "lucide-react";
+import { supabase } from "@/lib/supabase";
 
 
 export default function CurrentWeekCard({selectedPeriod, periods, setPeriods, setSelectedPeriod }) {
