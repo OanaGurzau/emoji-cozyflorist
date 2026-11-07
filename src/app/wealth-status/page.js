@@ -42,6 +42,21 @@ function getDatesBetween(
   return dates;
 }
 
+function formatLocalDate(date) {
+
+  return (
+    date.getFullYear() +
+    "-" +
+    String(
+      date.getMonth() + 1
+    ).padStart(2, "0") +
+    "-" +
+    String(
+      date.getDate()
+    ).padStart(2, "0")
+  );
+}
+
 export default function WealthStatusPage() {
 
   const [members, setMembers] =
@@ -63,38 +78,35 @@ export default function WealthStatusPage() {
     useState(true);
 
   // Default current month
-  useEffect(() => {
+useEffect(() => {
 
-    const today = new Date();
+  const today = new Date();
 
-    const firstDay =
-      new Date(
-        today.getFullYear(),
-        today.getMonth(),
-        1
-      );
-
-    const lastDay =
-      new Date(
-        today.getFullYear(),
-        today.getMonth() + 1,
-        0
-      );
-
-    setStartDate(
-      firstDay
-        .toISOString()
-        .split("T")[0]
+  // first day of current month
+  const firstDay =
+    new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      1
     );
 
-    setEndDate(
-      lastDay
-        .toISOString()
-        .split("T")[0]
-    );
+  // yesterday
+  const yesterday =
+    new Date();
 
-  }, []);
+  yesterday.setDate(
+    yesterday.getDate() - 1
+  );
 
+setStartDate(
+  formatLocalDate(firstDay)
+);
+
+setEndDate(
+  formatLocalDate(yesterday)
+);
+
+}, []);
   useEffect(() => {
 
     getMembers();
