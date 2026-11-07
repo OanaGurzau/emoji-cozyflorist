@@ -77,9 +77,13 @@ export default function GuildWealthDesktopTable({
           const memberDays =
             draftWealth[member.id] || {};
 
-          const gems =
+          const baseGems =
             calculateWealthGems(memberDays);
 
+          const gems =
+            member.status === "Eligible"
+              ? baseGems
+              : 0;
           let statusStyles = "";
           let iconBg = "";
           let StatusIcon = Check;
@@ -114,9 +118,8 @@ export default function GuildWealthDesktopTable({
             StatusIcon = MessageCircle;
           }
 
-          const isLocked =
-            member.status === "Waiting Period" ||
-            member.status === "Discord Required";
+const isLocked =
+  selectedPeriod?.is_finalized;
 
           return (
             <div
@@ -192,15 +195,31 @@ export default function GuildWealthDesktopTable({
                           return;
                         }
 
-                        setDraftWealth(prev => ({
-                          ...prev,
+setDraftWealth(prev => {
 
-                          [member.id]: {
-                            ...prev[member.id],
+  const currentValue =
+    prev[member.id]?.[selectedDay];
 
-                            [selectedDay]: value
-                          }
-                        }));
+  const updatedMemberDays = {
+    ...prev[member.id]
+  };
+
+  // deselect
+  if (currentValue === value) {
+
+    delete updatedMemberDays[selectedDay];
+
+  } else {
+
+    updatedMemberDays[selectedDay] = value;
+  }
+
+  return {
+    ...prev,
+
+    [member.id]: updatedMemberDays
+  };
+});
                       }}
                       className={`
                         min-w-[56px]
@@ -223,13 +242,18 @@ export default function GuildWealthDesktopTable({
                               opacity-60
                               pointer-events-none
                             `
-                            : isSelected
-                              ? `
-                                bg-[#3c874e]
-                                text-white
-                                border-[#3c874e]
-                              `
-                              : `
+: isSelected
+  ? value === 0
+    ? `
+      bg-[#D9534F]
+      text-white
+      border-[#D9534F]
+    `
+    : `
+      bg-[#3c874e]
+      text-white
+      border-[#3c874e]
+    `                              : `
                                 bg-white
                                 text-[#5B3B2E]
                                 border-[#DDECCF]
@@ -239,7 +263,7 @@ export default function GuildWealthDesktopTable({
                         }
                       `}
                     >
-                      {value}
+                      {value === 0 ? "<50" : value}
                     </button>
                   );
                 })}

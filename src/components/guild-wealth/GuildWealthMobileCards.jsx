@@ -29,9 +29,13 @@ export default function GuildWealthMobileCards({
         const memberDays =
           draftWealth[member.id] || {};
 
-        const gems =
+        const baseGems =
           calculateWealthGems(memberDays);
 
+        const gems =
+          member.status === "Eligible"
+            ? baseGems
+            : 0;
         let statusStyles = "";
         let iconBg = "";
         let StatusIcon = Check;
@@ -66,10 +70,9 @@ export default function GuildWealthMobileCards({
           StatusIcon = MessageCircle;
         }
 
-        const isLocked =
-          member.status === "Waiting Period" ||
-          member.status === "Discord Required";
-
+const isLocked =
+  selectedPeriod?.is_finalized;
+  
         return (
           <div
             key={member.id}
@@ -188,15 +191,31 @@ export default function GuildWealthMobileCards({
                           return;
                         }
 
-                        setDraftWealth(prev => ({
-                          ...prev,
+setDraftWealth(prev => {
 
-                          [member.id]: {
-                            ...prev[member.id],
+  const currentValue =
+    prev[member.id]?.[selectedDay];
 
-                            [selectedDay]: value
-                          }
-                        }));
+  const updatedMemberDays = {
+    ...prev[member.id]
+  };
+
+  // deselect
+  if (currentValue === value) {
+
+    delete updatedMemberDays[selectedDay];
+
+  } else {
+
+    updatedMemberDays[selectedDay] = value;
+  }
+
+  return {
+    ...prev,
+
+    [member.id]: updatedMemberDays
+  };
+});
                       }}
                       className={`
                         h-11
@@ -230,7 +249,7 @@ export default function GuildWealthMobileCards({
                         }
                       `}
                     >
-                      {value}
+                      {value === 0 ? "<50" : value}
                     </button>
                   );
                 })}

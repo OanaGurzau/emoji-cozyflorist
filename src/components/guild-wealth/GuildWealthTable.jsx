@@ -53,6 +53,7 @@ export default function GuildWealthTable({
     useState(dayKeys[adjustedIndex]);
 
   const wealthOptions = [
+    0,
     70,
     80,
     90,
@@ -152,10 +153,39 @@ export default function GuildWealthTable({
       return;
     }
 
+    // delete removed entries
+for (const entry of wealthEntries) {
+
+  const date =
+    new Date(entry.date);
+
+  const dayIndex =
+    date.getDay() === 0
+      ? 6
+      : date.getDay() - 1;
+
+  const dayKey =
+    dayKeys[dayIndex];
+
+  const stillExists =
+    draftWealth[
+      entry.member_id
+    ]?.[dayKey] !== undefined;
+
+  if (!stillExists) {
+
+    await supabase
+      .from("daily_wealth")
+      .delete()
+      .eq("id", entry.id);
+  }
+}
+
     for (const memberId in draftWealth) {
 
       const memberDays =
-        draftWealth[memberId];
+        draftWealth[memberId];  
+ 
 
       for (const dayKey in memberDays) {
 
@@ -211,9 +241,18 @@ export default function GuildWealthTable({
         }
       }
 
-      const wealthGems =
+      const memberData = members.find(
+        member => member.id === Number(memberId)
+      );
+
+      const baseWealthGems =
         calculateWealthGems(memberDays);
 
+      const wealthGems =
+        memberData?.status === "Eligible"
+          ? baseWealthGems
+          : 0;
+          
       const existingWeeklyReward =
         await supabase
           .from("weekly_rewards")

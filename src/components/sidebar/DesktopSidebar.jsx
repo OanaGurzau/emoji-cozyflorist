@@ -11,6 +11,7 @@ import {
   Coins,
   Gift,
   Bell,
+  MonitorCheck
 } from "lucide-react";
 
 export default function DesktopSidebar() {
@@ -24,7 +25,11 @@ export default function DesktopSidebar() {
       label: "Quest Board",
       icon: Bell
     },
-
+    {
+      href: "/wealth-status",
+      label: "Wealth Monitor",
+      icon: MonitorCheck
+    },
     {
       href: "/guild-competition",
       label: "Guild Competition",

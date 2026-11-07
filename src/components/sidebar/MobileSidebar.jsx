@@ -13,7 +13,8 @@ import {
   Gift,
   Menu,
   X,
-  Bell
+  Bell,
+  MonitorCheck
 } from "lucide-react";
 
 export default function MobileSidebar() {
@@ -27,6 +28,11 @@ const isAdmin = useAdminStatus();
       href: "/quest-board",
       label: "Quest Board",
       icon: Bell
+    },
+      {
+      href: "/wealth-status",
+      label: "Wealth Monitor",
+      icon: MonitorCheck
     },
     {
       href: "/guild-competition",
