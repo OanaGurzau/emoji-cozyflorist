@@ -20,21 +20,11 @@ export default function WealthStatusTracker({
   allDates
 }) {
 
-
-
   return (
 
-    <div className="flex gap-2 flex-wrap">
+    <div className="flex flex-wrap gap-2">
 
       {allDates.map(date => {
-
-          const dayLetter =
-  new Date(date)
-    .toLocaleDateString("en-GB", {
-      weekday: "short"
-    })
-    .charAt(0);
-
 
         const amount =
           memberDays[date];
@@ -42,41 +32,96 @@ export default function WealthStatusTracker({
         const status =
           getDayStatus(amount);
 
+        const parsedDate =
+          new Date(date);
+
+        const dayLetter =
+          parsedDate
+            .toLocaleDateString(
+              "en-GB",
+              {
+                weekday: "short"
+              }
+            )
+            .charAt(0);
+
+        const dayNumber =
+          parsedDate.getDate();
+
         return (
 
-<div
-  key={date}
-  title={
-    `${date}: ${
-      amount ?? "No Data"
-    }`
-  }
-  className={`
-    w-7
-    h-7
-    rounded-md
-    flex
-    items-center
-    justify-center
-    text-white
-    text-[10px]
-    font-bold
+          <div
+            key={date}
+            className="
+              flex
+              flex-col
+              items-center
+              gap-1
+            "
+          >
 
-    ${
-      status === "perfect"
-        ? "bg-[#1E6B47]"
-        : status === "pass"
-          ? "bg-[#4FA36B]"
-          : status === "fail"
-            ? "bg-[#D9534F]"
-            : "bg-[#D9D9D9]"
-    }
-  `}
->
+            {/* Day */}
+            <span
+              className="
+                text-[9px]
+                text-[#B7AEA4]
+                font-medium
+                uppercase
+                leading-none
+              "
+            >
+              {dayLetter}
+            </span>
 
-  {dayLetter}
+            {/* Date */}
+            <span
+              className="
+                text-[10px]
+                text-[#B7AEA4]
+                font-bold
+                leading-none
+              "
+            >
+              {dayNumber}
+            </span>
 
-</div>
+            {/* Value */}
+            <div
+              title={
+                `${date}: ${
+                  amount ?? "No Data"
+                }`
+              }
+              className={`
+                w-7
+                h-7
+                rounded-md
+                flex
+                items-center
+                justify-center
+                text-white
+                text-[11px]
+                font-semibold
+
+                ${
+                  status === "perfect"
+                    ? "bg-[#1E6B47]"
+                    : status === "pass"
+                      ? "bg-[#4FA36B]"
+                      : status === "fail"
+                        ? "bg-[#D9534F]"
+                        : "bg-[#D9D9D9]"
+                }
+              `}
+            >
+
+              {amount != null
+                ? amount
+                : ""}
+
+            </div>
+
+          </div>
 
         );
       })}

@@ -317,27 +317,26 @@ setEndDate(
 
           ) : (
 
-            <div className="space-y-4">
+      <div className="space-y-4">
 
-              {sortedMembers.map(
-                member => (
+        {sortedMembers.map(
+          member => (
 
-                  <WealthStatusMemberCard
-                    key={member.id}
-                    member={member}
-                    memberDays={
-                      wealthMap[
-                        member.id
-                      ] || {}
-                    }
-                    allDates={allDates}
-                  />
+            <WealthStatusMemberCard
+              key={member.id}
+              member={member}
+              memberDays={
+                wealthMap[
+                  member.id
+                ] || {}
+              }
+              allDates={allDates}
+            />
 
-                )
-              )}
+          )
+        )}
 
-            </div>
-
+      </div>
           )}
 
         </div>
